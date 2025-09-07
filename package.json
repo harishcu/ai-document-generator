@@ -1,0 +1,11 @@
+{
+  "name": "ai-reqdoc-bot",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "nodemon --watch src --exec \"node --env-file=.env --loader ts-node/esm src/server.ts\"",
+    "build": "tsc",
+    "start": "node dist/server.js"
+  }
+}

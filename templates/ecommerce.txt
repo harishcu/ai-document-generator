@@ -1,0 +1,7 @@
+Title: E-commerce Platform
+Sections:
+- Product Catalog
+- Cart & Checkout
+- Payment Integration
+- Order Tracking
+- Customer Support

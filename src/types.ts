@@ -2,7 +2,9 @@ import { z } from "zod";
 
 export const GenerateDocSchema = z.object({
   requirementsText: z.string().min(1, "requirementsText is required"),
-  language: z.string().default("en").optional() // keep for future i18n
+  language: z.string().default("en").optional(), 
+  summary: z.string().optional(),
+  templateName: z.string().optional()
 });
 
 export type GenerateDocInput = z.infer<typeof GenerateDocSchema>;

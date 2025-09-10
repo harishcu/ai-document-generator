@@ -1,43 +1,104 @@
 import "dotenv/config";
-import path from "node:path";
-import fs from "node:fs";
 import express from "express";
+import path from "node:path";
 import { GenerateDocSchema } from "./types.js";
 import { runWorkflow } from "./graph.js";
+import { loadMetadata } from "./versioning.js";
 
 const app = express();
 app.use(express.json());
 
-// Serve generated files
-const outDir = path.resolve("out");
-if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
-app.use("/downloads", express.static(outDir));
+// ✅ Serve generated files under /downloads
+app.use("/downloads", express.static(path.join(process.cwd(), "out")));
 
-app.post("/generate-doc", async (req, res) => {
+// ✅ POST /generate (Initial submission → v1)
+app.post("/generate", async (req, res) => {
   try {
-    const parsed = GenerateDocSchema.parse(req.body);
+    const parsed = GenerateDocSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({
+        success: false,
+        error: parsed.error.errors.map(e => e.message).join(", "),
+      });
+    }
 
-    const filePath = await runWorkflow(parsed.requirementsText);
-    const fileName = path.basename(filePath);
-    const base = process.env.BASE_URL ?? `http://localhost:${process.env.PORT || 3000}`;
-    const downloadUrl = `${base}/downloads/${fileName}`;
+    const { requirementsText, summary, templateName, language } = parsed.data;
+    const projectId = req.body.projectId || "demo_project";
 
-    return res.json({
-      ok: true,
-      message: "Requirement document generated successfully.",
-      downloadUrl
+    // ✅ runWorkflow now gives us both DOCX + PDF
+    const { filePath, pdfPath, version } = await runWorkflow(
+      requirementsText,
+      projectId,
+      summary || "Initial submission",
+      templateName,
+      language || "en"
+    );
+
+    res.json({
+      success: true,
+      filePath,
+      pdfPath,
+      version,
+      downloadUrl: `/downloads/${projectId}/${path.basename(filePath)}`,
+      pdfDownloadUrl: `/downloads/${projectId}/${path.basename(pdfPath)}`
     });
   } catch (err: any) {
     console.error(err);
-    return res.status(400).json({
-      ok: false,
-      error: err?.message || "Failed to generate document"
-    });
+    res.status(500).json({ success: false, error: err.message || "Server error" });
   }
 });
 
-const PORT = Number(process.env.PORT || 3000);
+// ✅ POST /update (Revisions → v2, v3, …)
+app.post("/update", async (req, res) => {
+  try {
+    const parsed = GenerateDocSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({
+        success: false,
+        error: parsed.error.errors.map(e => e.message).join(", "),
+      });
+    }
+
+    const { requirementsText, summary, templateName, language } = parsed.data;
+    const projectId = req.body.projectId || "demo_project";
+
+    const { filePath, pdfPath, version } = await runWorkflow(
+      requirementsText,
+      projectId,
+      summary || `Update v${Date.now()}`,
+      templateName,
+      language || "en"
+    );
+
+    res.json({
+      success: true,
+      filePath,
+      pdfPath,
+      version,
+      downloadUrl: `/downloads/${projectId}/${path.basename(filePath)}`,
+      pdfDownloadUrl: `/downloads/${projectId}/${path.basename(pdfPath)}`
+    });
+  } catch (err: any) {
+    console.error(err);
+    res.status(500).json({ success: false, error: err.message || "Server error" });
+  }
+});
+
+// ✅ GET /versions (list metadata)
+app.get("/versions/:projectId", (req, res) => {
+  try {
+    const projectId = req.params.projectId;
+    const meta = loadMetadata(projectId);
+    res.json({ success: true, projectId, versions: meta.versions });
+  } catch (err: any) {
+    console.error(err);
+    res.status(500).json({ success: false, error: err.message || "Server error" });
+  }
+});
+
+// ✅ Start server
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server listening on http://localhost:${PORT}`);
-  console.log(`Downloads served from /downloads`);
+  console.log(`✅ Server listening on http://localhost:${PORT}`);
+  console.log(`📂 Downloads available at /downloads`);
 });

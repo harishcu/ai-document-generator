@@ -1,113 +1,173 @@
-# 📄 AI Requirements Document Generator
+📄 AI Requirement Document Generator
 
-## 📌 Project Overview
-This project converts **messy requirement text** into a structured **Word document (.docx)** using **OpenAI GPT models**.  
-It helps quickly create clear requirement specifications for software projects.
+This project generates structured Requirement Documents (DOCX + PDF) from raw user requirement text using OpenAI LLM.
+It also supports versioning (v1, v2, v3...), RAG templates for consistent structure, and multilingual export (e.g., English, Hindi, Chinese).
 
----
+🚀 Features
 
-## 🚀 Features
-- Accepts unstructured requirement text as input.
-- Cleans and organizes requirements into:
-  - Title
-  - Sections and Subsections
-  - Assumptions
-  - Out of Scope
-  - (Optional) Figures list
-- Generates a **downloadable Word (.docx)** document with:
-  - Auto-generated Table of Contents
-  - Structured sections with bullets
-- REST API endpoint for generating documents dynamically.
+✅ Generate .docx requirement documents with automatic structure
 
----
+✅ Export to PDF (well-formatted, readable)
 
-## 🛠️ Technologies Used
-- **Node.js** + **TypeScript**
-- **Express.js** (API server)
-- **Zod** (input validation)
-- **OpenAI API** (LLM for structuring requirements)
-- **docx** (Word file generation)
-- **dotenv** (environment configuration)
+✅ Version control (v1, v2, v3...) for each project
 
----
+✅ RAG templates for consistent document structure
 
-## ⚙️ Setup Instructions
+✅ Multilingual support (output in Hindi, English, Chinese, Arabic, etc.)
 
-1. **Clone the project**
-   ```bash
-   git clone <your-repo-link>
-   cd ai-reqdoc-bot
-   npm install
-Create .env file
+✅ REST API endpoints for generate, update, and list versions
 
-env
-Copy code
-OPENAI_API_KEY=your_openai_api_key_here
-PORT=3000
-BASE_URL=http://localhost:3000
-Run in development
-
-bash
-Copy code
-npm run dev
-Build & run in production
-
-bash
-Copy code
-npm run build
-npm start
-📡 API Usage
-Endpoint
-bash
-Copy code
-POST /generate-doc
-Example Request
-json
-Copy code
-{
-  "requirementsText": "The system should allow user login, an admin dashboard, and chatbot integration"
-}
-Example Response
-json
-Copy code
-{
-  "ok": true,
-  "message": "Requirement document generated successfully.",
-  "downloadUrl": "http://localhost:3000/downloads/Requirements_1694100000000.docx"
-}
-✅ Output Example
-Generated Word document includes:
-
-Title: AI Chatbot Requirement Document
-
-Sections: Overview, Assumptions, Out of Scope
-
-Table of Contents and bullets
-
-File is downloadable via the provided downloadUrl.
-
-🔮 Future Improvements
-Add multi-language support.
-
-Add API authentication.
-
-Deploy to cloud (Vercel, Render, AWS, etc.).
-
-Add a frontend UI for easier interaction.
-
-🗂️ Project Structure
-pgsql
-Copy code
+📂 Project Structure
 ai-reqdoc-bot/
 │── src/
-│   ├── server.ts
-│   ├── graph.ts
-│   ├── docx.ts
-│   ├── llm.ts
-│   ├── prompt.ts
-│   ├── preprocess.ts
-│   └── types.ts
-│── .env.example
+│   ├── server.ts         # Express server (API endpoints)
+│   ├── graph.ts          # Workflow orchestrator
+│   ├── docx.ts           # DOCX document generator
+│   ├── pdf.ts            # PDF document generator
+│   ├── llm.ts            # LLM (OpenAI) integration
+│   ├── preprocess.ts     # Preprocessing input requirements
+│   ├── prompt.ts         # Prompt templates
+│   ├── rag.ts            # RAG template loader
+│   ├── versioning.ts     # Version metadata handling
+│   ├── types.ts          # Types & schema validation
+│── templates/            # Folder with reusable templates (*.txt)
+│── out/                  # Generated documents (DOCX + PDF)
 │── package.json
 │── tsconfig.json
-│── README.md
+│── .env                  # Your OpenAI API Key
+
+⚙️ Setup
+
+Clone the repo
+
+git clone https://github.com/harishcu/ai-document-generator.git
+
+
+
+Install dependencies
+
+npm install
+
+
+Set up environment variables
+Create a .env file:
+
+OPENAI_API_KEY=your_openai_api_key_here
+
+
+Run the server
+
+npm run dev
+
+
+You should see:
+
+✅ Server listening on http://localhost:3000
+📂 Downloads available at /downloads
+
+🛠️ API Usage (via Postman / cURL)
+1️⃣ Generate First Document (v1)
+
+POST http://localhost:3000/generate
+
+{
+  "projectId": "chatbot_mvp",
+  "requirementsText": "The chatbot must support login, FAQs, and escalation to a human agent.",
+  "summary": "Draft v1",
+  "templateName": "src_template",
+  "language": "en"
+}
+
+2️⃣ Update Project (v2)
+
+POST http://localhost:3000/update
+
+{
+  "projectId": "chatbot_mvp",
+  "requirementsText": "The chatbot must support login, FAQs, escalation to human agent, and multi-language support.",
+  "summary": "Added multi-language support",
+  "templateName": "src_template",
+  "language": "hi"
+}
+
+3️⃣ Add Another Update (v3)
+
+POST http://localhost:3000/update
+
+{
+  "projectId": "chatbot_mvp",
+  "requirementsText": "The chatbot must support login, FAQs, escalation to human agent, multi-language support, and integration with payment gateway.",
+  "summary": "Added payment gateway integration",
+  "templateName": "src_template",
+  "language": "en"
+}
+
+4️⃣ List All Versions
+
+GET http://localhost:3000/versions/chatbot_mvp
+
+Response:
+
+{
+  "success": true,
+  "projectId": "chatbot_mvp",
+  "versions": [
+    { "version": 1, "fileName": "Requirements_v1.docx", "summary": "Draft v1" },
+    { "version": 2, "fileName": "Requirements_v2.docx", "summary": "Added multi-language support" },
+    { "version": 3, "fileName": "Requirements_v3.docx", "summary": "Added payment gateway integration" }
+  ]
+}
+
+📥 Output Files
+
+After running, check the out/ folder:
+
+out/
+ └── chatbot_mvp/
+      ├── Requirements_v1.docx
+      ├── Requirements_v1.pdf
+      ├── Requirements_v2.docx
+      ├── Requirements_v2.pdf
+      ├── Requirements_v3.docx
+      ├── Requirements_v3.pdf
+      └── metadata.json
+
+
+You can download any file directly from your browser at:
+
+http://localhost:3000/downloads/chatbot_mvp/Requirements_v1.docx
+http://localhost:3000/downloads/chatbot_mvp/Requirements_v1.pdf
+
+🌍 Multilingual Support
+
+Pass language in request body:
+
+"en" → English
+
+"hi" → Hindi
+
+"zh" → Chinese
+
+"ar" → Arabic
+
+Example:
+
+{
+  "projectId": "chatbot_mvp",
+  "requirementsText": "The chatbot must support secure payments.",
+  "summary": "Testing Hindi output",
+  "templateName": "src_template",
+  "language": "hi"
+}
+
+✅ Done
+
+You now have a document generation system with:
+
+DOCX + PDF export
+
+Version history
+
+RAG templates
+
+Multilingual output

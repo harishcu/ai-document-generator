@@ -1,0 +1,28 @@
+{
+  "versions": [
+    {
+      "version": 1,
+      "fileName": "Requirements_v1.docx",
+      "timestamp": "2025-09-10T08:18:54.128Z",
+      "summary": "Draft v1"
+    },
+    {
+      "version": 2,
+      "fileName": "Requirements_v2.docx",
+      "timestamp": "2025-09-10T08:21:47.912Z",
+      "summary": "Added multi-language support"
+    },
+    {
+      "version": 3,
+      "fileName": "Requirements_v3.docx",
+      "timestamp": "2025-09-10T08:24:36.054Z",
+      "summary": "Added payment gateway integration"
+    },
+    {
+      "version": 4,
+      "fileName": "Requirements_v4.docx",
+      "timestamp": "2025-09-10T09:52:59.626Z",
+      "summary": "Draft v1"
+    }
+  ]
+}

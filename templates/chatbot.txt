@@ -1,0 +1,7 @@
+Title: Chatbot MVP
+Sections:
+- Authentication
+- FAQ Handling
+- Escalation
+- Multi-language support
+- Payment integration

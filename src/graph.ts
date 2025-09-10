@@ -1,30 +1,50 @@
+import path from "node:path";
 import { generateDocx } from "./docx.js";
 import { preprocess } from "./preprocess.js";
-import { SYSTEM_PROMPT, userPromptFor } from "./prompt.js";
+import { SYSTEM_PROMPT } from "./prompt.js";
 import { structureRequirements } from "./llm.js";
 import { StructuredRequirements } from "./types.js";
+import { addVersion, loadMetadata } from "./versioning.js";
+import { loadTemplate } from "./rag.js";
+import { generatePDF } from "./pfd.js";   
 
-/**
- * This function runs your real LangGraph-style workflow:
- * 1. Preprocess raw requirements text
- * 2. Build user prompt with preprocessed points
- * 3. Call the LLM to structure the requirements
- * 4. Generate DOCX and return the file path
- */
-export async function runWorkflow(requirementsText: string): Promise<string> {
-  // 1. Preprocess raw input into clean bullet points
+export async function runWorkflow(
+  requirementsText: string,
+  projectId: string,
+  summary = "Initial submission",
+  templateName?: string,  
+  language: string = "en"
+): Promise<{ filePath: string; pdfPath: string; version: number }> {
   const points = preprocess(requirementsText);
 
-  // 2. Build user prompt
-  const userPrompt = userPromptFor(points);
+  // ✅ Add template if provided
+  const template = templateName ? loadTemplate(templateName) : "";
 
-  // 3. Call LLM to get structured JSON
+  const userPrompt = `
+  ${template ? `Follow this template:\n${template}\n\n` : ""}
+  Organize these requirement points into a structured document:
+  ${points.map((p, i) => `${i + 1}. ${p}`).join("\n")}
+  IMPORTANT: Write the document in **${language}**.
+  All section titles, bullets, assumptions, and text must be fully written in ${language}.
+  Do not include English anywhere.
+  `;
+
   const structuredData: StructuredRequirements = await structureRequirements(
     SYSTEM_PROMPT,
     userPrompt
   );
 
-  // 4. Generate DOCX
-  const filePath = await generateDocx(structuredData);
-  return filePath;
+  const meta = loadMetadata(projectId);
+  const nextVersion = meta.versions.length + 1;
+
+  // ✅ Generate DOCX
+  const filePath = await generateDocx(structuredData, projectId, "out", nextVersion);
+
+  // ✅ Generate PDF
+  const pdfPath = generatePDF(structuredData, projectId, nextVersion);
+
+  // ✅ Save version metadata
+  const versionInfo = addVersion(projectId, path.basename(filePath), summary);
+
+  return { filePath, pdfPath, version: versionInfo.version };
 }

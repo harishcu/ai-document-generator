@@ -1,23 +1,23 @@
-📄 AI Requirement Document Generator
+AI Requirement Document Generator
 
 This project generates structured Requirement Documents (DOCX + PDF) from raw user requirement text using OpenAI LLM.
 It also supports versioning (v1, v2, v3...), RAG templates for consistent structure, and multilingual export (e.g., English, Hindi, Chinese).
 
-🚀 Features
+Features
 
-✅ Generate .docx requirement documents with automatic structure
+Generate .docx requirement documents with automatic structure
 
-✅ Export to PDF (well-formatted, readable)
+Export to PDF (well-formatted, readable)
 
-✅ Version control (v1, v2, v3...) for each project
+Version control (v1, v2, v3...) for each project
 
-✅ RAG templates for consistent document structure
+RAG templates for consistent document structure
 
-✅ Multilingual support (output in Hindi, English, Chinese, Arabic, etc.)
+Multilingual support (output in Hindi, English, Chinese, Arabic, etc.)
 
-✅ REST API endpoints for generate, update, and list versions
+REST API endpoints for generate, update, and list versions
 
-📂 Project Structure
+Project Structure
 ai-reqdoc-bot/
 │── src/
 │   ├── server.ts         # Express server (API endpoints)
@@ -36,7 +36,7 @@ ai-reqdoc-bot/
 │── tsconfig.json
 │── .env                  # Your OpenAI API Key
 
-⚙️ Setup
+Setup
 
 Clone the repo
 
@@ -62,13 +62,13 @@ npm run dev
 
 You should see:
 
-✅ Server listening on http://localhost:3000
-📂 Downloads available at /downloads
+Server listening on http://localhost:3000
+Downloads available at /downloads
 
-🛠️ API Usage (via Postman / cURL)
-1️⃣ Generate First Document (v1)
+API Usage (via Postman / cURL)
+Generate First Document (v1)
 
-POST http://localhost:3000/generate
+1.POST http://localhost:3000/generate
 
 {
   "projectId": "chatbot_mvp",
@@ -78,7 +78,7 @@ POST http://localhost:3000/generate
   "language": "en"
 }
 
-2️⃣ Update Project (v2)
+2.Update Project (v2)
 
 POST http://localhost:3000/update
 
@@ -90,7 +90,7 @@ POST http://localhost:3000/update
   "language": "hi"
 }
 
-3️⃣ Add Another Update (v3)
+3️.Add Another Update (v3)
 
 POST http://localhost:3000/update
 
@@ -102,7 +102,7 @@ POST http://localhost:3000/update
   "language": "en"
 }
 
-4️⃣ List All Versions
+4️.List All Versions
 
 GET http://localhost:3000/versions/chatbot_mvp
 
@@ -118,7 +118,7 @@ Response:
   ]
 }
 
-📥 Output Files
+Output Files
 
 After running, check the out/ folder:
 
@@ -138,7 +138,7 @@ You can download any file directly from your browser at:
 http://localhost:3000/downloads/chatbot_mvp/Requirements_v1.docx
 http://localhost:3000/downloads/chatbot_mvp/Requirements_v1.pdf
 
-🌍 Multilingual Support
+Multilingual Support
 
 Pass language in request body:
 
@@ -160,7 +160,7 @@ Example:
   "language": "hi"
 }
 
-✅ Done
+Done
 
 You now have a document generation system with:
 

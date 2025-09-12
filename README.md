@@ -69,7 +69,7 @@ Downloads available at /downloads
   "projectId": "chatbot_mvp",  
   "requirementsText": "The chatbot must support login, FAQs, and escalation to a human agent.",  
   "summary": "Draft v1",  
-  "templateName": "src_template",  
+  "templateName": "default",  
   "language": "en"  
 }
 
@@ -81,7 +81,7 @@ Downloads available at /downloads
   "projectId": "chatbot_mvp",  
   "requirementsText": "The chatbot must support login, FAQs, escalation to human agent, and multi-language support.",  
   "summary": "Added multi-language support",  
-  "templateName": "src_template",  
+  "templateName": "default",  
   "language": "hi"  
 }
 
@@ -93,7 +93,7 @@ Downloads available at /downloads
   "projectId": "chatbot_mvp",  
   "requirementsText": "The chatbot must support login, FAQs, escalation to human agent, multi-language support, and integration with payment gateway.",  
   "summary": "Added payment gateway integration",  
-  "templateName": "src_template",  
+  "templateName": "default",  
   "language": "en"  
 }
 

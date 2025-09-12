@@ -53,7 +53,17 @@ Downloads available at /downloads
 # API Usage (via Postman / cURL)
 ### 1.Generate First Document (v1)
 
-#### POST http://localhost:3000/generate
+#### POST http://localhost:3000/generate  
+ ### In Headers:   
+ key:Content-Type    
+ value:application/json    
+
+<img width="969" height="335" alt="image" src="https://github.com/user-attachments/assets/da05ce38-09ff-49ac-a3b1-7ac88a3f753b" />    
+#### Body (raw, JSON):  
+<img width="1496" height="352" alt="image" src="https://github.com/user-attachments/assets/d75f18b7-73be-41d0-ae3e-07c43329bc1c" />
+
+
+
 
 {  
   "projectId": "chatbot_mvp",  
@@ -101,7 +111,8 @@ Downloads available at /downloads
     { "version": 2, "fileName": "Requirements_v2.docx", "summary": "Added multi-language support" },  
     { "version": 3, "fileName": "Requirements_v3.docx", "summary": "Added payment gateway integration" }
   ]  
-}
+}  
+<img width="1140" height="216" alt="image" src="https://github.com/user-attachments/assets/03674598-c24b-4b16-8550-bb6bf906645d" />  
 
 # Output Files
 

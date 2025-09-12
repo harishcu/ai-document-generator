@@ -53,6 +53,9 @@ Set up environment variables
 Create a .env file:
 
 OPENAI_API_KEY=your_openai_api_key_here
+PORT=3000
+BASE_URL=http://localhost:3000
+
 
 
 Run the server
